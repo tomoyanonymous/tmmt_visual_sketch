@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-               BuildableName = "6_cloudcircle.app"
-               BlueprintName = "6_cloudcircle"
-               ReferencedContainer = "container:6_cloudcircle.xcodeproj">
+               BuildableName = "5_6_shaderfeedback.app"
+               BlueprintName = "5_6_shaderfeedback"
+               ReferencedContainer = "container:5_6_shaderfeedback.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "6_cloudcircle.app"
-            BlueprintName = "6_cloudcircle"
-            ReferencedContainer = "container:6_cloudcircle.xcodeproj">
+            BuildableName = "5_6_shaderfeedback.app"
+            BlueprintName = "5_6_shaderfeedback"
+            ReferencedContainer = "container:5_6_shaderfeedback.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -52,9 +52,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "6_cloudcircle.app"
-            BlueprintName = "6_cloudcircle"
-            ReferencedContainer = "container:6_cloudcircle.xcodeproj">
+            BuildableName = "5_6_shaderfeedback.app"
+            BlueprintName = "5_6_shaderfeedback"
+            ReferencedContainer = "container:5_6_shaderfeedback.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -70,9 +70,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "6_cloudcircle.app"
-            BlueprintName = "6_cloudcircle"
-            ReferencedContainer = "container:6_cloudcircle.xcodeproj">
+            BuildableName = "5_6_shaderfeedback.app"
+            BlueprintName = "5_6_shaderfeedback"
+            ReferencedContainer = "container:5_6_shaderfeedback.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
