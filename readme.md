@@ -2,7 +2,13 @@
 
 [Tomoya Matsuura](https://matsuuratomoya.com)
 
-This is the repository of my  almost daily sketch from Sep. 2018.
+These are the sources of my (almost) daily sketch from Sep. 2018.
+
+## How to run
+
+1. place this folder in openFrameworks/apps/
+2. drug the folder from finder to project generator and press "update"
+3. click "open in IDE"!
 
 ## Environment 
 
@@ -28,7 +34,7 @@ Codes are MIT Lisence. Generated images(thumbnails and videos on instagram/twitt
 ### 2_grav_ball_3D
 
 - mouse to move a camera(ofEasyCam)
-- space to accelerate particles
+- space to force to accelerate particles
 
 ![](./2_gravball_3d/thum.png)
 
