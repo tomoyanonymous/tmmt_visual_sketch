@@ -95,3 +95,23 @@ Codes are MIT Lisence. Generated images(thumbnails and videos on instagram/twitt
 ![thum](10_circlerotation2/thum.png)
 
 ![cat](10_circlerotation2/cat.png)
+
+### 11_walkingmotion_displacement
+
+- data.h is walking motion data(in text...!) from [Zach's example](https://github.com/ofZach/SFPC_RTP_fall18/tree/master/walkingPersonExample)
+- g to switch debug view
+- d to switch human bone(I mistaked keys g and d, to be fixed)
+- space to reset
+- mouseX changes an amount of displacement
+
+![thum](11_walkingdisplace/thum.png)
+
+### 12_pixelsortcat
+
+- space to reset
+- up-down key to changes screen division
+- z key to change sorting direction(horizontal/vertical)
+
+### 13_cellautomatoncat
+
+- left-right key to change images
