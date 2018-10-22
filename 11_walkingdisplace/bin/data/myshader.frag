@@ -105,8 +105,8 @@ vec2 center = resolution/2.0;
 //    vec2 center = resolution/2.0;
     float modulation =atan(sin(time*4)*1.2)*0.02+0.005;
     color.r  = texture(tex0,st+velocity*1.00).r;
-    color.g  = texture(tex0,st+velocity*1.03).g;
-    color.b  = texture(tex0,st+velocity*1.06).b;
+    color.g  = texture(tex0,st+velocity*1.05).g;
+    color.b  = texture(tex0,st+velocity*1.1).b;
 
     float amnt=0;
     outputColor = color;

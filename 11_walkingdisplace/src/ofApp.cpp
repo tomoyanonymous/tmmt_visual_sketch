@@ -4,7 +4,7 @@ void ofApp::initDraw(){
     pingpong.src->begin();
     ofBackground(0);
     ofSetColor(255);
-    int rectnum = 10;
+    int rectnum = 5;
     float rectsize = 640/(rectnum*2);
     for(int i = 0;i<rectnum*2;i++){ // y
         for(int j = 0;j<rectnum;j++){ // x
