@@ -39,6 +39,7 @@ class ofApp : public ofBaseApp {
     void resetBlank();
     void resetCircle();
     void resetOscReceiver(int port);
+    void reloadShader();
     void initGui();
     static void applyBlur1d(ofShader &blurshader, ofFbo &target, float amount);
     void applyBlur(ofFbo &target, float amount);
@@ -64,6 +65,9 @@ class ofApp : public ofBaseApp {
     float time;
     ofParameter<float> myscale;
     ofParameter<float> myblur;
+
+    ofParameter<ofVec4f> color_shift;
+
     ofParameter<int> mode;
     ofParameter<int> port;
     bool debug_view;

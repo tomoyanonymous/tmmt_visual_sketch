@@ -5,6 +5,8 @@ uniform sampler2DRect tex0;
 
 uniform vec2 resolution;
 uniform float scale;
+uniform vec4 color_shift;
+
 in vec2 texCoordVarying;
 uniform float time;
 
@@ -91,6 +93,10 @@ float noise(vec3 p){
     return o4.y * d.y + o4.x * (1.0 - d.y);
 }
 
+vec4 getnewvalue(int cnt,vec2 move,float offset){
+ return   (1.0/(scale*20*(cnt*2+1.0))* texture(tex0,gl_FragCoord.xy+move*scale*(10.0+offset)));
+}
+
 void main() {
     vec2 st = gl_FragCoord.xy;
 
@@ -107,13 +113,13 @@ void main() {
 //    st.x +=noise(st)
 //    vec2 tvec = vec2(noise(vec2(time+3000,1)),noise(vec2(time+3000,1000)))*2;
     float amnt=0;
-    for (int i=0; i<5; i++) {
+    for (int i=0; i<4; i++) {
         vec2 move = vec2(noise(vec3(st/11.,time*0.1))-0.5,noise(vec3(st/11.,time*0.1+3000))-0.5);
 
-        color.r += (1.0/(scale*20*(i*2+1.0))* texture(tex0,st+move*scale*12.0)).r;
-        color.g += (1.0/(scale*20*(i*2+1.0))* texture(tex0,st+move*scale*11.0)).g;
-        color.b += (1.0/(scale*20*(i*2+1.0))* texture(tex0,st+move*scale*10.0)).b;
-        color.a += (1.0/(scale*20*(i*2+1.0))* texture(tex0,st+move*scale*10.2)).a;
+        color.r += getnewvalue(i,move,color_shift.r).r;
+        color.g += getnewvalue(i,move,color_shift.g).g;
+        color.b +=  getnewvalue(i,move,color_shift.b).b;
+        color.a +=  getnewvalue(i,move,color_shift.a).a;
 
         amnt +=1.0/(scale*20*(i*2+1.0));
     }
@@ -124,7 +130,7 @@ void main() {
 
 
 //    color.xyz = rgb2hsb(color.xyz);
-//    color.r+=0.015; //hue rotate
+//    color.r+=0.001; //hue rotate
 //    color.g*=0.999;
 //    color.xyz = hsb2rgb(color.xyz);
     outputColor = color;

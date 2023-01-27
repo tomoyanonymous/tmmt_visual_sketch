@@ -10,6 +10,7 @@
 #include "ofLog.h"
 #include "ofParameter.h"
 #include "ofVec2f.h"
+#include "ofVec4f.h"
 #include <memory>
 
 MessageType addressToMessage(std::string const &str) {
@@ -26,6 +27,9 @@ void ofApp::initGui() {
 
     this->myblur.set("Blur", 5.0, 0.0, 5.0);
     this->myscale.set("Noise Intensity", 5.0, 0.0, 5.0);
+    this->color_shift.set("Color Shift", ofVec4f(2.0, 1.0, 0.0, 0.1),
+                          ofVec4f(0.0, 0.0, 0.0, 0.0),
+                          ofVec4f(3.0, 3.0, 3.0, 3.0));
 
     this->mode.set("Control Mode", ControlMode::MANUAL);
     this->port.set("OSC Port", 8000, 0, 99999);
@@ -44,6 +48,13 @@ void ofApp::resetOscReceiver(int port) {
     log.log(OF_LOG_NOTICE, "app", "reset osc");
 }
 //--------------------------------------------------------------
+void ofApp::reloadShader() {
+    this->shader.load("myshader");
+    this->centercircle.load("centercircle");
+    this->noise.load("shaderPnoise");
+    this->blurx.load("shaderBlurX");
+    this->blury.load("shaderBlurY");
+}
 void ofApp::setup() {
     ofSetLogLevel(OF_LOG_NOTICE);
     ofSetEscapeQuitsApp(false);
@@ -51,12 +62,7 @@ void ofApp::setup() {
     initGui();
     this->resetOscReceiver(this->port);
 
-    shader.load("myshader");
-    centercircle.load("centercircle");
-    noise.load("shaderPnoise");
-    blurx.load("shaderBlurX");
-    blury.load("shaderBlurY");
-
+    this->reloadShader();
     fbo1.allocate(ofGetWidth(), ofGetHeight());
     fbo1.begin();
     ofClear(0);
@@ -113,6 +119,8 @@ void ofApp::drawMainShader() {
     shader.begin();
     shader.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
     shader.setUniform1f("scale", myscale);
+    shader.setUniform4f("color_shift",color_shift.get());
+
     shader.setUniform1f("time", time);
     fbo1.draw(0, 0);
     shader.end();
@@ -175,10 +183,18 @@ void ofApp::drawUi() {
 
     mode = mode_tmp;
     bool fullscreen_tmp = this->fullscreen;
+    ImGui::BeginGroup();
+
     if (ImGui::Checkbox("Full Screen(F)", &fullscreen_tmp)) {
         this->fullscreen = fullscreen_tmp;
         setFullScreen(fullscreen_tmp);
     }
+    if (ImGui::SmallButton("Reload Shader File")) {
+        reloadShader();
+    }
+    ImGui::EndGroup();
+
+    ImGui::BeginGroup();
     if (ImGui::SmallButton("Reset To Blank(Space)")) {
         this->resetBlank();
     }
@@ -186,14 +202,16 @@ void ofApp::drawUi() {
     if (ImGui::SmallButton("Reset To Circle(R)")) {
         this->resetCircle();
     }
+    ImGui::EndGroup();
+
     ImGui::BeginGroup();
     ofxImGui::AddParameter(myscale);
     ofxImGui::AddParameter(myblur);
-
+    ofxImGui::AddParameter(color_shift);
     ImGui::EndGroup();
     ofxImGui::EndWindow(mainsettings);
 
-    //logs are super heavy,disabled 
+    // logs are super heavy,disabled
 
     // auto logwindow_settings = ofxImGui::Settings();
     // logwindow_settings.windowSize = ofVec2f(400, 200);
