@@ -14,9 +14,16 @@ These are the sources of my (almost) daily sketch from Sep. 2018.
 
 - Macbook Pro (13-inch, Mid 2012)
 - High Sierra 10.13.5
-- Xcode9.4.1
+- Xcode 9.4.1
 - of 0.10.0 (built from git repository)
 - some of works use shader with OpenGL3/GLSL 150 mode(ofLineWidth doesn't work).
+
+*(2023-01-23) updated.*
+
+- Macbook Pro 2019 16inch (Intel)
+- macOS 12.3.1(Monteley)
+- using Visual Studio Code, each space contains `.code-workspace`
+- When to use `clangd` as an alternative intellisense, run `compiledb -n make` each time you add a new include file in the header to generate `compile_commands.json`.
 
 ## License
 
@@ -82,6 +89,8 @@ Codes are MIT Lisence. Generated images(thumbnails and videos on instagram/twitt
 ### 9_circle_rotation
 
 - click to reset,f to switch fullscreen(and glitch...)
+
+(2023-01-27: glitch did not happen on newer environment, in of 0.11.2 and Macbook Pro 16inch 2019 model)
 
 ![thum](9_circlerotation/thum.png)
 
