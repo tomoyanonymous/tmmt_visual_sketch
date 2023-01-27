@@ -1,10 +1,17 @@
 #pragma once
 
+#include "BaseTheme.h"
 #include "ofMain.h"
+#include "ofParameter.h"
 #include "ofxGui.h"
-#include "ofxOsc.h"
+#include "ofxImGui.h"
+#include "ofxImGuiLoggerChannel.h"
 
-enum ControlMode { AUTO = 0, MANUAL = 1, OSC = 2 };
+#include "ofxOsc.h"
+#include <memory>
+#include <sstream>
+
+enum ControlMode { AUTO = 0, MANUAL = 1, OSC = 2, GUI = 3 };
 
 enum MessageType { BLUR_AMOUNT, SCALE, UNKNOWN };
 MessageType addressToMessage(std::string const &str);
@@ -31,11 +38,16 @@ class ofApp : public ofBaseApp {
   private:
     void resetBlank();
     void resetCircle();
+    void resetOscReceiver(int port);
+    void initGui();
     static void applyBlur1d(ofShader &blurshader, ofFbo &target, float amount);
     void applyBlur(ofFbo &target, float amount);
     void updateParams();
     void drawMainShader();
+    void drawUi();
     void processOscMessage();
+    void setFullScreen(bool flag);
+
 
     ofShader shader;
     ofShader noise;
@@ -43,10 +55,17 @@ class ofApp : public ofBaseApp {
     ofFbo fbo1;
     ofxOscReceiver osc;
     ofxOscMessage latest_msg;
-	
+    std::stringstream osc_log;
+
+    ofParameterGroup params;
+    std::unique_ptr<ofxPanel> gui;
+    ofxImGui::Gui imgui;
+    ofxImGui::LoggerChannel log;
     float time;
-    float myscale;
-    float myblur;
-    ControlMode mode;
+    ofParameter<float> myscale;
+    ofParameter<float> myblur;
+    ofParameter<int> mode;
+    ofParameter<int> port;
     bool debug_view;
+    ofParameter<bool> fullscreen;
 };

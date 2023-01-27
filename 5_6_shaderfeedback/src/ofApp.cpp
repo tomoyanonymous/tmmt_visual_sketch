@@ -1,9 +1,16 @@
 #include "ofApp.h"
 
+#include "BaseTheme.h"
+#include "DefaultTheme.h"
+#include "ImHelpers.h"
+#include "imgui.h"
 #include "ofAppRunner.h"
 #include "ofColor.h"
 #include "ofGraphics.h"
+#include "ofLog.h"
+#include "ofParameter.h"
 #include "ofVec2f.h"
+#include <memory>
 
 MessageType addressToMessage(std::string const &str) {
     if (str == "/blur")
@@ -13,13 +20,37 @@ MessageType addressToMessage(std::string const &str) {
     return MessageType::UNKNOWN;
 }
 
+void ofApp::initGui() {
+    this->params.clear();
+    this->params.setName("parameters");
+
+    this->myblur.set("Blur", 5.0, 0.0, 5.0);
+    this->myscale.set("Noise Intensity", 5.0, 0.0, 5.0);
+
+    this->mode.set("Control Mode", ControlMode::MANUAL);
+    this->port.set("OSC Port", 8000, 0, 99999);
+    this->params.add(this->myblur, this->myscale);
+
+    this->debug_view = false;
+    this->fullscreen = false;
+    imgui.setup();
+}
+void ofApp::resetOscReceiver(int port) {
+    if (osc.isListening()) {
+        osc.stop();
+    }
+    this->osc.setup(port);
+    this->osc.start();
+    log.log(OF_LOG_NOTICE, "app", "reset osc");
+}
 //--------------------------------------------------------------
 void ofApp::setup() {
-    this->mode = ControlMode::MANUAL;
-    this->debug_view = false;
+    ofSetLogLevel(OF_LOG_NOTICE);
+    ofSetEscapeQuitsApp(false);
     this->latest_msg.clear();
-    this->osc.setup(8000);
-    this->osc.start();
+    initGui();
+    this->resetOscReceiver(this->port);
+
     shader.load("myshader");
     centercircle.load("centercircle");
     noise.load("shaderPnoise");
@@ -55,16 +86,23 @@ void ofApp::applyBlur(ofFbo &target, float amount) {
 }
 
 void ofApp::processOscMessage() {
+
     while (this->osc.getNextMessage(this->latest_msg)) {
+        // osc_log << this->latest_msg;
+        // log.log(OF_LOG_NOTICE, "osc", osc_log.str());
+        // osc_log.clear();
         std::string address = this->latest_msg.getAddress();
         MessageType v_type = addressToMessage(address);
         switch (v_type) {
-        case BLUR_AMOUNT:
-            //   auto blur = this->latest_msg.getArgAsFloat(0);
-            // this->blurx = blur;
-            break;
-        case SCALE:
-            break;
+        case BLUR_AMOUNT: {
+            auto blur = this->latest_msg.getArgAsFloat(0);
+            this->myblur = blur;
+        } break;
+        case SCALE: {
+            auto scale = this->latest_msg.getArgAsFloat(0);
+            this->myscale = scale;
+        } break;
+
         case UNKNOWN:
             break;
         }
@@ -85,27 +123,34 @@ void ofApp::updateParams() {
     auto getpos = [=](float speed) {
         return pow((cos(time * speed) + 1.0) * 0.5, exp);
     };
+    processOscMessage();
     switch (this->mode) {
     case AUTO:
+        myblur.disableEvents();
+        myscale.disableEvents();
         // AM
         //  0~4
         myblur = getpos(1.2) * getpos(0.2) * range;
-
-        // 0~4
         myscale = getpos(1.0) * getpos(0.3) * range;
 
         break;
     case MANUAL:
+        myblur.disableEvents();
+        myscale.disableEvents();
         myblur = 5.0 * (float)mouseY / ofGetHeight();
         myscale = 5.0 * (float)mouseX / ofGetWidth();
 
         break;
     case OSC:
+
+    case GUI:
+        myblur.enableEvents();
+        myscale.enableEvents();
         break;
     }
 }
 void ofApp::update() {
-    this->latest_msg.clear();
+
     this->updateParams();
 
     fbo1.begin();
@@ -115,7 +160,53 @@ void ofApp::update() {
 
     this->time += 1 / 60.;
 }
+void ofApp::drawUi() {
+    auto mainsettings = ofxImGui::Settings();
+    this->imgui.begin();
+    ofxImGui::BeginWindow("Debug View(D to toggle)", mainsettings);
+    int port_tmp = this->port;
+    if (ImGui::InputInt("OSC Port", &port_tmp)) {
+        resetOscReceiver(port_tmp);
+        this->port = port_tmp;
+    };
+    std::vector<std::string> labels = {"auto", "mouse", "osc", "gui"};
+    int mode_tmp = mode;
+    ofxImGui::VectorListBox("Control Mode", &mode_tmp, labels);
 
+    mode = mode_tmp;
+    bool fullscreen_tmp = this->fullscreen;
+    if (ImGui::Checkbox("Full Screen(F)", &fullscreen_tmp)) {
+        this->fullscreen = fullscreen_tmp;
+        setFullScreen(fullscreen_tmp);
+    }
+    if (ImGui::SmallButton("Reset To Blank(Space)")) {
+        this->resetBlank();
+    }
+
+    if (ImGui::SmallButton("Reset To Circle(R)")) {
+        this->resetCircle();
+    }
+    ImGui::BeginGroup();
+    ofxImGui::AddParameter(myscale);
+    ofxImGui::AddParameter(myblur);
+
+    ImGui::EndGroup();
+    ofxImGui::EndWindow(mainsettings);
+
+    //logs are super heavy,disabled 
+
+    // auto logwindow_settings = ofxImGui::Settings();
+    // logwindow_settings.windowSize = ofVec2f(400, 200);
+    // logwindow_settings.windowPos =
+    //     mainsettings.windowPos + ImVec2(0.0, mainsettings.windowSize.y);
+    // ofxImGui::BeginWindow("OSC Log", logwindow_settings);
+
+    // ImGui::TextWrapped(log.getBuffer().c_str());
+    // ImGui::LogButtons();
+    // ofxImGui::EndWindow(logwindow_settings);
+
+    this->imgui.end();
+}
 //--------------------------------------------------------------
 void ofApp::draw() {
     this->fbo1.draw(0, 0);
@@ -125,9 +216,14 @@ void ofApp::draw() {
                              this->myblur / 5.0 * ofGetHeight()),
                      4.0);
         ofSetColor(ofColor::white);
+
+        drawUi();
     }
 }
-
+void ofApp::setFullScreen(bool flag) {
+    ofSetFullscreen(flag);
+    fbo1.allocate(ofGetWidth(), ofGetHeight());
+}
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
     switch (key) {
@@ -138,8 +234,8 @@ void ofApp::keyPressed(int key) {
         this->resetCircle();
         break;
     case 'f':
-        ofToggleFullscreen();
-        fbo1.allocate(ofGetWidth(), ofGetHeight());
+        fullscreen = !fullscreen;
+        this->setFullScreen(this->fullscreen);
         break;
     case 'd':
         this->debug_view = !this->debug_view;
