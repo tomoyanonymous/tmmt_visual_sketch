@@ -10,7 +10,7 @@ Release*/
 .svn/
 
 # VsCode
-.cache/clangd/*
+**/.cache/clangd/*
 browse.db
 
 #XCode
