@@ -39,12 +39,12 @@ void main() {
     vec2 pos = vec2(st*7.);
 
     // Use the noise function
-    float r = noise(pos+time)+random(pos)*0.01;
-    float g = noise(pos+rgbcorel+time)+random(pos)*0.01;
-    float b = noise(pos+rgbcorel*2.0+time)+random(pos)*0.01;
-//    float r = random(pos+time)+random(pos)*0.01;
-//    float g = random(pos+rgbcorel+time)+random(pos)*0.01;
-//    float b = random(pos+rgbcorel*2.0+time)+random(pos)*0.01;
+//    float r = noise(pos+time)+random(pos)*0.01;
+//    float g = noise(pos+rgbcorel+time)+random(pos)*0.01;
+//    float b = noise(pos+rgbcorel*2.0+time)+random(pos)*0.01;
+    float r = random(pos+time)+random(pos)*0.01;
+    float g = random(pos+rgbcorel+time)+random(pos)*0.01;
+    float b = random(pos+rgbcorel*2.0+time)+random(pos)*0.01;
     
     outputColor = vec4(r,g,b,1.0);
 }
